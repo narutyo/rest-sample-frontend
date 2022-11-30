@@ -6,14 +6,19 @@
     <h1 v-else>
       {{ otherError }}
     </h1>
-    <NuxtLink to="/">
-      Home page
-    </NuxtLink>
+    <NuxtLink to="/"> Home page </NuxtLink>
   </v-app>
 </template>
 
 <script>
-export default {
+import {
+  defineComponent,
+  ref,
+  toRefs,
+  useMeta
+} from '@nuxtjs/composition-api'
+
+export default defineComponent({
   name: 'EmptyLayout',
   layout: 'empty',
   props: {
@@ -22,20 +27,24 @@ export default {
       default: null
     }
   },
-  data () {
+  head: {},
+  setup (props) {
+    const { error } = toRefs(props)
+    const { meta } = useMeta()
+
+    const pageNotFound = ref('404 Not Found')
+    const otherError = ref('An error occurred')
+
+    meta.value = [
+      { title: error.statusCode === 404 ? pageNotFound : otherError }
+    ]
+
     return {
-      pageNotFound: '404 Not Found',
-      otherError: 'An error occurred'
-    }
-  },
-  head () {
-    const title =
-      this.error.statusCode === 404 ? this.pageNotFound : this.otherError
-    return {
-      title
+      pageNotFound,
+      otherError
     }
   }
-}
+})
 </script>
 
 <style scoped>

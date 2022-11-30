@@ -7,6 +7,7 @@
       fixed
       app
     >
+
       <v-list>
         <v-list-item
           v-for="(item, i) in items"
@@ -24,36 +25,14 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar
-      :clipped-left="clipped"
-      fixed
-      app
-    >
+    <v-app-bar :clipped-left="clipped" fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
+      <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>mdi-minus</v-icon>
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
+      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
@@ -62,57 +41,102 @@
         <Nuxt />
       </v-container>
     </v-main>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
+    <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title class="text-h6">
+            My Account
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-divider></v-divider>
+      <v-list
+        dense
+        nav
+      >
+        <password-change>
+          <template #default="slotProps">
+            <v-list-item
+              link
+              v-bind="slotProps.attrs"
+              v-on="slotProps.on"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-lock</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>パスワード変更</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </password-change>
+        <v-list-item
+          to="/sessions/logout"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-chart-bubble</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>ログアウト</v-list-item-title>
+          </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-footer
-      :absolute="!fixed"
-      app
-    >
+    <v-footer :absolute="!fixed" app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
-export default {
+import {
+  defineComponent,
+  ref,
+  useContext
+} from '@nuxtjs/composition-api'
+import PasswordChange from '~/components/Password/PasswordChange.vue'
+
+export default defineComponent({
   name: 'DefaultLayout',
-  data () {
+  components: {
+    PasswordChange
+  },
+  middleware: 'auth',
+  setup () {
+    const { $config } = useContext()
+
+    const clipped = ref(false)
+    const drawer = ref(true)
+    const fixed = ref(false)
+    const items = ref([
+      {
+        icon: 'mdi-home',
+        title: 'ホーム',
+        to: '/'
+      },
+      {
+        icon: 'mdi-chart-bubble',
+        title: 'ログアウト',
+        to: '/sessions/logout'
+      }
+    ])
+    const miniVariant = ref(false)
+    const right = ref(true)
+    const rightDrawer = ref(false)
+    const title = ref($config.siteTitle)
+
     return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
-        }
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+      clipped,
+      drawer,
+      fixed,
+      items,
+      miniVariant,
+      right,
+      rightDrawer,
+      title
     }
   }
-}
+})
 </script>

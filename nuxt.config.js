@@ -1,30 +1,38 @@
 import colors from 'vuetify/es5/util/colors'
+require('dotenv').config()
 
 export default {
+  // Target: https://go.nuxtjs.dev/config-target
+  target: "server",
+  ssr: false,
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - auth-sample-frontend',
-    title: 'auth-sample-frontend',
+    titleTemplate: `%s | ${process.env.TITLE}`,
+    title: process.env.TITLE,
     htmlAttrs: {
-      lang: 'en'
+      lang: 'en',
     },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
+      { name: 'format-detection', content: 'telephone=no' },
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-  ],
+  css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~plugins/axios.js',
+    '~plugins/const.js',
+    '~plugins/filter.js',
+    '~plugins/utils.js',
+    '~plugins/validator.js',
+    { src: '@/plugins/localStorage.js', ssr: false },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -35,41 +43,108 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    '@nuxtjs/composition-api/module',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios'
+    'nuxt-webfontloader',
+    'nuxt-interpolation',
+    '@nuxtjs/axios',
+    '@nuxtjs/dotenv',
+    '@nuxtjs/toast',
+    '@nuxtjs/auth-next',
   ],
-
-  // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/'
-  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
+    customVariables: ["~/assets/variables.scss"],
+    defaultAssets: {
+      font: false,
+    },
+    treeShake: true,
     theme: {
-      dark: true,
+      dark: false,
       themes: {
+        light: {
+          primary: colors.blue,
+          secondary: "#304156",
+          success: colors.green,
+          danger: colors.red,
+          warning: colors.deepOrange,
+          info: colors.indigo,
+
+          dark: "#242939",
+
+          background: "#f2f3f8"
+        },
         dark: {
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
+          primary: colors.blue,
+          secondary: "#304156",
+          success: colors.green,
+          danger: colors.red,
+          warning: colors.deepOrange,
+          info: colors.indigo
         }
       }
     }
   },
+  webfontloader: {
+    google: {
+      families: ['Archivo:400;500;600;700'],
+    },
+  },
+  toast: {
+    position: 'top-right',
+    duration: 5000,
+  },
+
+  auth: {
+    redirect: {
+      login: '/sessions/login',
+      logout: '/sessions/login',
+      home: false,
+    },
+    strategies: {
+      local: {
+        token: {
+          property: "token",
+          global: true,
+          // required: true,
+          // type: 'Bearer'
+        },
+        user: {
+          property: "user",
+          // autoFetch: true
+        },
+        endpoints: {
+          login: { url: "/api/session/login", method: "post" },
+          logout: { url: "/api/session/logout", method: "post" },
+          user: { url: "/api/session/user", method: "get" },
+        },
+      },
+    },
+  },
+
+  publicRuntimeConfig: {
+    axios: {
+      proxy: true,
+    },
+    proxy: {
+      '/': process.env.API_URL_BROWSER,
+    },
+    homeUrl: process.env.HOME_URL,
+    siteTitle: process.env.TITLE,
+  },
+
+  privateRuntimeConfig: {
+    axios: {
+      baseURL: process.env.API_URL
+    },
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-  }
+  build: {}
 }
