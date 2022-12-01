@@ -25,6 +25,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+
     <v-app-bar :clipped-left="clipped" fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-btn icon @click.stop="miniVariant = !miniVariant">
@@ -115,6 +116,16 @@ export default defineComponent({
         icon: 'mdi-home',
         title: 'ホーム',
         to: '/'
+      },
+      {
+        title: 'サンプル（RSS）',
+        icon: 'mdi-application-cog-outline',
+        to: 'sample/rss'
+      },
+      {
+        title: 'テンプレートマスタ管理',
+        icon: 'mdi-notebook-plus ',
+        to: 'note/template_master'
       },
       {
         icon: 'mdi-chart-bubble',

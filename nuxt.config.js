@@ -29,6 +29,7 @@ export default {
   plugins: [
     '~plugins/axios.js',
     '~plugins/const.js',
+    '~plugins/fetchFields.js',
     '~plugins/filter.js',
     '~plugins/utils.js',
     '~plugins/validator.js',
@@ -120,9 +121,9 @@ export default {
           // autoFetch: true
         },
         endpoints: {
-          login: { url: "/api/session/login", method: "post" },
-          logout: { url: "/api/session/logout", method: "post" },
-          user: { url: "/api/session/user", method: "get" },
+          login: { url: "/session/login", method: "post" },
+          logout: { url: "/session/logout", method: "post" },
+          user: { url: "/session/user", method: "get" },
         },
       },
     },
