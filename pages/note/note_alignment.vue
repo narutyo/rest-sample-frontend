@@ -3,11 +3,11 @@
     <v-col cols="12">
       <v-card>
         <v-card-title>
-          ノートテンプレートマスタ
+          連携ノートマスタ
           <v-spacer></v-spacer>
           <v-spacer></v-spacer>
           <v-spacer></v-spacer>
-          <template-form
+          <alignment-form
             @reload="getContents"
           >
             <template #default="slotProps">
@@ -19,10 +19,10 @@
                 v-on="slotProps.on"
               >
                 <v-icon>mdi-plus</v-icon>
-                新規テンプレート登録
+                新しいノートを準備
               </v-btn>
             </template>
-          </template-form>
+          </alignment-form>
         </v-card-title>
 
         <v-container fluid class="pa-1">
@@ -75,9 +75,33 @@
               {{ item.created_at|datetime_format }}
             </div>
           </template>
+          <template #[`item.open`]="{item}">
+            <template
+              v-if="item.note_uri"
+            >
+              <v-btn
+                color="primary"
+                dark
+                icon
+                @click="noteOpen(item)"
+              >
+                <v-icon>mdi-note-edit</v-icon>
+              </v-btn>
+            </template>
+            <template v-else>
+              <v-btn
+                color="primary"
+                dark
+                icon
+                @click="noteCreate(item)"
+              >
+                <v-icon>mdi-note-plus</v-icon>
+              </v-btn>
+            </template>
+          </template>
           <template #[`item.edit`]="{item}">
-            <template-form
-              :template="item"
+            <alignment-form
+              :note="item"
               @reload="getContents"
             >
               <template #default="slotProps">
@@ -91,11 +115,11 @@
                   <v-icon>mdi-pencil-box-outline</v-icon>
                 </v-btn>
               </template>
-            </template-form>
+            </alignment-form>
           </template>
           <template #[`item.delete`]="{item}">
-            <templete-delete
-              :template="item"
+            <alignment-delete
+              :note="item"
               @reload="getContents"
             >
               <template #default="slotProps">
@@ -109,7 +133,7 @@
                   <v-icon>mdi-delete-forever</v-icon>
                 </v-btn>
               </template>
-            </templete-delete>
+            </alignment-delete>
           </template>
         </v-data-table>
       </v-card>
@@ -125,20 +149,20 @@ import {
   computed,
   onMounted
 } from '@nuxtjs/composition-api'
-import TemplateForm from '~/components/Note/TemplateForm.vue'
-import TempleteDelete from '~/components/Note/TempleteDelete.vue'
+import AlignmentForm from '~/components/Note/AlignmentForm.vue'
+import AlignmentDelete from '~/components/Note/AlignmentDelete.vue'
 
 export default defineComponent({
   name: 'SampleRssIndex',
   head: {
-    title: 'ノートテンプレート一覧'
+    title: '連携ノート一覧'
   },
   components: {
-    TemplateForm,
-    TempleteDelete
+    AlignmentForm,
+    AlignmentDelete
   },
   setup () {
-    const { app, store } = useContext()
+    const { app, store, $config } = useContext()
 
     const loading = ref(false)
     const page = ref(1)
@@ -154,12 +178,19 @@ export default defineComponent({
     })
     const headers = ref([
       {
-        text: 'ノートテンプレート名',
+        text: 'ノート名',
         align: 'start',
         sortable: true,
         value: 'name'
       },
       { text: '登録日', value: 'created_at', width: '15%' },
+      {
+        text: '連携',
+        align: 'start',
+        sortable: false,
+        value: 'open',
+        width: '8%'
+      },
       {
         text: '編集',
         align: 'start',
@@ -187,12 +218,13 @@ export default defineComponent({
       loading.value = true
 
       const paramJson = {
-        'fields[]': app.$fetchFields.noteTemplateList,
+        'fields[]': app.$fetchFields.noteAlignmentList,
         limit: limit.value,
         offset: (page.value - 1) * limit.value
       }
       if (filter.value.name) { paramJson.filter_name = filter.value.name }
-      const ret = await app.$axios.$get('/note/template?' + app.$search_params(paramJson) + searthQuery.value)
+      const ret = await app.$axios.$get('/note/alignment?' + app.$search_params(paramJson) + searthQuery.value)
+      console.log(ret)
       totalCount.value = ret.metadata.resultset.count
       desserts.value = ret.results.map(item => item)
       loading.value = false
@@ -227,9 +259,28 @@ export default defineComponent({
         sort: 'name',
         order: 'asc'
       }
-      const ret = await app.$axios.$get('/note/template?' + app.$search_params(paramJson))
+      const ret = await app.$axios.$get('/note/alignment?' + app.$search_params(paramJson))
       suggest.value.items = ret.results.map(item => item.name)
       suggest.value.loading = false
+    }
+    const noteCreate = (item) => {
+      const paramJson = {
+        access_id: $config.accessKeyId,
+        access_token: app.$auth.strategy.token.get(),
+        template_id: item.note_template_master.template_id,
+        folder_uri: item.note_template_master.folder_uri,
+        internal_id: item.uuid,
+        note_new_uri: $config.apiUrl + '/note/alignment/callback'
+      }
+      window.location.href = 'eyachoch6:///nsk/new?' + app.$search_params(paramJson)
+    }
+    const noteOpen = (item) => {
+      const paramJson = {
+        access_id: $config.accessKeyId,
+        access_token: app.$auth.strategy.token.get(),
+        note_uri: item.note_uri
+      }
+      window.location.href = 'eyachoch6:///nsk/open?' + app.$search_params(paramJson)
     }
 
     onMounted(async () => {
@@ -252,7 +303,9 @@ export default defineComponent({
       setClearName,
       updatePager,
       updateOptions,
-      getSuggest
+      getSuggest,
+      noteCreate,
+      noteOpen
     }
   }
 })

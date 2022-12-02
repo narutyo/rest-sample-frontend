@@ -166,7 +166,6 @@ export default defineComponent({
 
     onMounted(async () => {
       await getContents()
-      // console.log(app.$auth.strategy.token.get())
     })
 
     return {

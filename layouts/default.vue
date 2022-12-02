@@ -120,12 +120,17 @@ export default defineComponent({
       {
         title: 'サンプル（RSS）',
         icon: 'mdi-application-cog-outline',
-        to: 'sample/rss'
+        to: '/sample/rss'
+      },
+      {
+        title: '連携ノート管理',
+        icon: 'mdi-note-plus-outline',
+        to: '/note/note_alignment'
       },
       {
         title: 'テンプレートマスタ管理',
-        icon: 'mdi-notebook-plus ',
-        to: 'note/template_master'
+        icon: 'mdi-note-multiple-outline',
+        to: '/note/template_master'
       },
       {
         icon: 'mdi-chart-bubble',

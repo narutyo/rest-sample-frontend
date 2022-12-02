@@ -138,6 +138,8 @@ export default {
     },
     homeUrl: process.env.HOME_URL,
     siteTitle: process.env.TITLE,
+    accessKeyId: process.env.ACCESS_KEY_ID,
+    apiUrl: process.env.API_URL_BROWSER,
   },
 
   privateRuntimeConfig: {

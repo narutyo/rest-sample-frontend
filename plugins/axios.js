@@ -6,6 +6,7 @@ export default ({ $axios, $toast }) => {
 
   // リクエストログ
   $axios.onRequest((config) => {
+    // console.log(config)
   })
   // レスポンスログ
   $axios.onResponse((config) => {

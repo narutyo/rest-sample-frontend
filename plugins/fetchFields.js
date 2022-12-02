@@ -5,6 +5,13 @@ const FETCH_FIELDS = {
     'template_id',
     'folder_uri',
     'created_at'
+  ],
+  noteAlignmentList: [
+    'uuid',
+    'name',
+    'note_template_master',
+    'note_uri',
+    'created_at'
   ]
 }
 

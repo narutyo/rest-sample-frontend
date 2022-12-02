@@ -35,7 +35,7 @@
             >
               <v-text-field
                 v-model="form.name"
-                label="テンプレート名"
+                label="判別名"
                 :counter="255"
                 :rules="[rules.required, rules.length]"
                 :error="errors.name"
@@ -44,36 +44,20 @@
               ></v-text-field>
             </v-col>
             <v-col
+              v-if="!note"
               cols="12"
               sm="12"
               md="12"
             >
-              <v-text-field
-                v-model="form.template_id"
-                label="テンプレートID"
-                hint="新規作成する帳票のノートテンプレートID"
-                :counter="255"
-                :rules="[rules.required, rules.length]"
-                :error="errors.template_id"
-                :error-messages="messages.template_id"
-                @keydown="clearError('template_id')"
-              ></v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              sm="12"
-              md="12"
-            >
-              <v-text-field
-                v-model="form.folder_uri"
-                label="保存先フォルダ"
-                hint="新規作成する帳票の保存先フォルダのURL"
-                :counter="255"
-                :rules="[rules.required, rules.length]"
-                :error="errors.folder_uri"
-                :error-messages="messages.folder_uri"
-                @keydown="clearError('folder_uri')"
-              ></v-text-field>
+              <v-select
+                v-model="form.note_template_master_id"
+                :items="templateMasters"
+                :menu-props="{ maxHeight: '400' }"
+                label="ノートテンプレート"
+                hint="ノートテンプレートを選択してください"
+                no-data-text="データがありません"
+                persistent-hint
+              ></v-select>
             </v-col>
           </v-row>
         </v-form>
@@ -82,7 +66,7 @@
         class="text-center mt-4"
       >
         <v-btn
-          v-if="!template"
+          v-if="!note"
           outlined
           @click="post()"
         >新規登録</v-btn>
@@ -107,14 +91,14 @@ import {
 
 export default defineComponent({
   props: {
-    template: {
+    note: {
       type: Object,
       default: () => {}
     }
   },
   setup (props, { emit }) {
     const { app } = useContext()
-    const { template } = toRefs(props)
+    const { note } = toRefs(props)
 
     // フォーム
     const observer = ref(null)
@@ -122,9 +106,9 @@ export default defineComponent({
     const isAddOpen = ref(false)
     const form = ref({
       name: '',
-      template_id: '',
-      folder_uri: ''
+      note_template_master_id: ''
     })
+    const templateMasters = ref([])
     const loading = ref(false)
     // バリデーション
     const rules = ref({
@@ -133,21 +117,32 @@ export default defineComponent({
     })
     const errors = ref({
       name: false,
-      template_id: false,
-      folder_uri: false
+      note_template_master_id: false
     })
     const messages = ref({
       name: null,
-      template_id: null,
-      folder_uri: null
+      note_template_master_id: null
     })
 
     watch(() => isAddOpen.value,
-      (to, from) => {
-        if (to === true && template.value) {
-          form.value.name = template.value.name
-          form.value.template_id = template.value.template_id
-          form.value.folder_uri = template.value.folder_uri
+      async (to, from) => {
+        if (to === true) {
+          if (note.value) {
+            form.value.name = note.value.name
+          } else {
+            const paramJson = {
+              'fields[]': ['uuid', 'name'],
+              sort: 'name',
+              order: 'asc'
+            }
+            const ret = await app.$axios.$get('/note/template?' + app.$search_params(paramJson))
+            templateMasters.value = ret.results.map((item) => {
+              return {
+                value: item.uuid,
+                text: item.name
+              }
+            })
+          }
         }
       },
       { immediate: true }
@@ -155,36 +150,35 @@ export default defineComponent({
     const post = async () => {
       loading.value = true
       if (observer.value.validate()) {
-        await app.$axios.$post('/note/template', {
+        await app.$axios.$post('/note/alignment', {
           name: form.value.name,
-          template_id: form.value.template_id,
-          folder_uri: form.value.folder_uri
+          note_template_master_id: form.value.note_template_master_id
         }).then((response) => {
           isAddOpen.value = false
           observer.value.reset()
           loading.value = false
-          app.$toast.success('ノートテンプレートを新規登録しました')
+          app.$toast.success('連携ノートを新規登録しました')
+          console.log(response)
           emitReload()
         }).catch(() => {
-          app.$toast.error('ノートテンプレートの新規登録に失敗しました')
+          app.$toast.error('連携ノートの新規登録に失敗しました')
         })
       }
     }
     const update = async () => {
       loading.value = true
       if (observer.value.validate()) {
-        await app.$axios.$put('/note/template/' + template.value.uuid, {
-          name: form.value.name,
-          template_id: form.value.template_id,
-          folder_uri: form.value.folder_uri
+        await app.$axios.$put('/note/alignment/' + note.value.uuid, {
+          name: form.value.name
         }).then((response) => {
           isAddOpen.value = false
           observer.value.reset()
           loading.value = false
-          app.$toast.success('ノートテンプレートを更新しました')
+          app.$toast.success('連携ノートを更新しました')
+          console.log(response)
           emitReload()
         }).catch(() => {
-          app.$toast.error('ノートテンプレートの更新処理に失敗しました')
+          app.$toast.error('連携ノートの更新処理に失敗しました')
         })
       }
     }
@@ -208,6 +202,7 @@ export default defineComponent({
       observer,
 
       isAddOpen,
+      templateMasters,
       form,
       loading,
       rules,
