@@ -263,10 +263,16 @@ export default defineComponent({
       suggest.value.items = ret.results.map(item => item.name)
       suggest.value.loading = false
     }
+
+    const tokenVal = computed(() => {
+      const token = app.$auth.strategy.token.get()
+      return token.replace(/^Bearer /, '')
+    })
+
     const noteCreate = (item) => {
       const paramJson = {
         access_id: $config.accessKeyId,
-        access_token: app.$auth.strategy.token.get(),
+        access_token: tokenVal.value,
         template_id: item.note_template_master.template_id,
         folder_uri: item.note_template_master.folder_uri,
         internal_id: item.uuid,
@@ -277,7 +283,7 @@ export default defineComponent({
     const noteOpen = (item) => {
       const paramJson = {
         access_id: $config.accessKeyId,
-        access_token: app.$auth.strategy.token.get(),
+        access_token: tokenVal.value,
         note_uri: item.note_uri
       }
       window.location.href = 'eyachoch6:///nsk/open?' + app.$search_params(paramJson)

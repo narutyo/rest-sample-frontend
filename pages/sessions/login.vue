@@ -81,10 +81,18 @@ export default defineComponent({
 
     const userLogin = async () => {
       try {
-        await app.$auth.loginWith('local', { data: login.value })
+        const param = {
+          grant_type: 'password',
+          client_id: app.$config.clientId,
+          client_secret: app.$config.clientSecret,
+          username: login.value.email,
+          password: login.value.password,
+          scope: ''
+        }
+        await app.$auth.loginWith('local', { data: param })
         router.push({ path: '/' })
       } catch (err) {
-        // console.log(err)
+        console.log(err)
       }
     }
 

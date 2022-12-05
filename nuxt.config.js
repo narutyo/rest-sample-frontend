@@ -111,14 +111,11 @@ export default {
     strategies: {
       local: {
         token: {
-          property: "token",
+          property: "access_token",
           global: true,
-          // required: true,
-          // type: 'Bearer'
         },
         user: {
           property: "user",
-          // autoFetch: true
         },
         endpoints: {
           login: { url: "/session/login", method: "post" },
@@ -140,6 +137,8 @@ export default {
     siteTitle: process.env.TITLE,
     accessKeyId: process.env.ACCESS_KEY_ID,
     apiUrl: process.env.API_URL_BROWSER,
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
   },
 
   privateRuntimeConfig: {
