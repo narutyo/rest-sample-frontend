@@ -81,6 +81,7 @@ export default defineComponent({
 
     const userLogin = async () => {
       try {
+        /* Laravel Passport
         const param = {
           grant_type: 'password',
           client_id: app.$config.clientId,
@@ -90,6 +91,8 @@ export default defineComponent({
           scope: ''
         }
         await app.$auth.loginWith('local', { data: param })
+        */
+        await app.$auth.loginWith('local', { data: login.value })
         router.push({ path: '/' })
       } catch (err) {
         console.log(err)
