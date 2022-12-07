@@ -33,6 +33,7 @@ export default {
     '~plugins/filter.js',
     '~plugins/utils.js',
     '~plugins/validator.js',
+    '~plugins/sentry.js',
     { src: '@/plugins/localStorage.js', ssr: false },
   ],
 
@@ -57,6 +58,7 @@ export default {
     '@nuxtjs/dotenv',
     '@nuxtjs/toast',
     '@nuxtjs/auth-next',
+    '@nuxtjs/sentry',
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -137,6 +139,7 @@ export default {
     siteTitle: process.env.TITLE,
     accessKeyId: process.env.ACCESS_KEY_ID,
     apiUrl: process.env.API_URL_BROWSER,
+    sentryDsn: process.env.SENTRY_DSN,
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
   },

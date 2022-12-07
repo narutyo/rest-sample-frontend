@@ -94,8 +94,8 @@ export default defineComponent({
         */
         await app.$auth.loginWith('local', { data: login.value })
         router.push({ path: '/' })
-      } catch (err) {
-        console.log(err)
+      } catch (error) {
+        // app.$captureError(error)
       }
     }
 
