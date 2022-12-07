@@ -278,6 +278,7 @@ export default defineComponent({
         internal_id: item.uuid,
         note_new_uri: $config.apiUrl + '/note/alignment/callback'
       }
+      console.log('eyachoch6:///nsk/new?' + app.$search_params(paramJson))
       window.location.href = 'eyachoch6:///nsk/new?' + app.$search_params(paramJson)
     }
     const noteOpen = (item) => {
@@ -286,6 +287,7 @@ export default defineComponent({
         access_token: tokenVal.value,
         note_uri: item.note_uri
       }
+      console.log('eyachoch6:///nsk/open?' + app.$search_params(paramJson))
       window.location.href = 'eyachoch6:///nsk/open?' + app.$search_params(paramJson)
     }
 
