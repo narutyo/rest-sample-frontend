@@ -4,9 +4,9 @@
       <v-card>
         <v-card-title>
           連携ノートマスタ
-          <v-spacer></v-spacer>
-          <v-spacer></v-spacer>
-          <v-spacer></v-spacer>
+          <v-spacer />
+          <v-spacer />
+          <v-spacer />
           <alignment-form
             @reload="getContents"
           >
@@ -47,7 +47,7 @@
                 @update:search-input="getSuggest"
                 @change="setFilter"
                 @click:clear="setClearName"
-              ></v-combobox>
+              />
             </v-col>
           </v-row>
         </v-container>
@@ -60,7 +60,7 @@
           :headers="headers"
           :items="desserts"
           :server-items-length="totalCount"
-          :footer-props = "{
+          :footer-props="{
             'items-per-page-text' : '表示件数:',
             'items-per-page-options': $const.itemsPerPageOptions
           }"
@@ -154,9 +154,6 @@ import AlignmentDelete from '~/components/Note/AlignmentDelete.vue'
 
 export default defineComponent({
   name: 'SampleRssIndex',
-  head: {
-    title: '連携ノート一覧'
-  },
   components: {
     AlignmentForm,
     AlignmentDelete
@@ -269,9 +266,19 @@ export default defineComponent({
       return token.replace(/^Bearer /, '')
     })
 
+    const generateAccessId = () => {
+      /*
+      const crypto = require('crypto')
+      const S = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+      const N = 32
+      return Array.from(crypto.randomFillSync(new Uint8Array(N))).map(n => S[n % S.length]).join('')
+      */
+      return $config.accessKeyId
+    }
+
     const noteCreate = (item) => {
       const paramJson = {
-        access_id: $config.accessKeyId,
+        access_id: generateAccessId(),
         access_token: tokenVal.value,
         template_id: item.note_template_master.template_id,
         folder_uri: item.note_template_master.folder_uri,
@@ -283,7 +290,7 @@ export default defineComponent({
     }
     const noteOpen = (item) => {
       const paramJson = {
-        access_id: $config.accessKeyId,
+        access_id: generateAccessId(),
         access_token: tokenVal.value,
         note_uri: item.note_uri
       }
@@ -315,6 +322,9 @@ export default defineComponent({
       noteCreate,
       noteOpen
     }
+  },
+  head: {
+    title: '連携ノート一覧'
   }
 })
 </script>

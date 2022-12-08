@@ -3,9 +3,10 @@
     <v-col cols="12" sm="8" md="6">
       <v-card>
         <v-card-text class="text-center">
-          <h6 class="text--disabled font-weight-medium mb-10">
-            {{$config.siteTitle}}
-          </h6>
+          <h6
+            class="text--disabled font-weight-medium mb-10"
+            v-text="$config.siteTitle"
+          />
           <v-text-field
             v-model="login.email"
             label="メールアドレス"
@@ -18,7 +19,7 @@
             name="input-10-2"
             label="パスワード"
             @click:append="show = !show"
-          ></v-text-field>
+          />
 
           <v-btn
             class="mb-4"
@@ -66,9 +67,6 @@ export default defineComponent({
     PasswordForget
   },
   layout: 'Session',
-  head: {
-    title: 'ログイン'
-  },
   setup () {
     const { app } = useContext()
     const router = useRouter()
@@ -81,7 +79,6 @@ export default defineComponent({
 
     const userLogin = async () => {
       try {
-        /* Laravel Passport
         const param = {
           grant_type: 'password',
           client_id: app.$config.clientId,
@@ -91,8 +88,9 @@ export default defineComponent({
           scope: ''
         }
         await app.$auth.loginWith('local', { data: param })
-        */
+        /* Laravel Sanctum
         await app.$auth.loginWith('local', { data: login.value })
+        */
         router.push({ path: '/' })
       } catch (error) {
         // app.$captureError(error)
@@ -105,6 +103,9 @@ export default defineComponent({
 
       userLogin
     }
+  },
+  head: {
+    title: 'ログイン'
   }
 })
 </script>
