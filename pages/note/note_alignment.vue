@@ -221,7 +221,6 @@ export default defineComponent({
       }
       if (filter.value.name) { paramJson.filter_name = filter.value.name }
       const ret = await app.$axios.$get('/note/alignment?' + app.$search_params(paramJson) + searthQuery.value)
-      console.log(ret)
       totalCount.value = ret.metadata.resultset.count
       desserts.value = ret.results.map(item => item)
       loading.value = false
@@ -266,33 +265,37 @@ export default defineComponent({
       return token.replace(/^Bearer /, '')
     })
 
-    const generateAccessId = () => {
-      /*
-      const crypto = require('crypto')
-      const S = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-      const N = 32
-      return Array.from(crypto.randomFillSync(new Uint8Array(N))).map(n => S[n % S.length]).join('')
-      */
-      return $config.accessKeyId
-    }
-
     const noteCreate = (item) => {
       const paramJson = {
-        access_id: generateAccessId(),
+        access_id: $config.accessKeyId,
         access_token: tokenVal.value,
         template_id: item.note_template_master.template_id,
         folder_uri: item.note_template_master.folder_uri,
         internal_id: item.uuid,
-        note_new_uri: $config.apiUrl + '/note/alignment/callback'
+        note_new_uri: $config.apiUrl + '/note/alignment/callback',
+        supply_info_uri: $config.apiUrl + '/note/alignment/supply_info',
+        recordset_uri: $config.apiUrl + '/note/alignment/recordset',
+        page_template_id: 'https://mps-test.metamoji.com/link/GRinHrCSu3Vxg6iEUYS_EyXj.mmjloc',
+        tag_namespace: 'com.metamoji.package.gemba.21234B4B-C92C-4C30-87D8-17ABB02BEFA8.RssView',
+        createUserName: app.$auth.user.name,
+        createUserMail: app.$auth.user.email,
+        createdAt: Math.floor(new Date().getTime() / 1000),
+        openedAt: Math.floor(new Date().getTime() / 1000)
       }
       console.log('eyachoch6:///nsk/new?' + app.$search_params(paramJson))
       window.location.href = 'eyachoch6:///nsk/new?' + app.$search_params(paramJson)
     }
     const noteOpen = (item) => {
+      console.log(new Date().getTime())
       const paramJson = {
-        access_id: generateAccessId(),
+        access_id: $config.accessKeyId,
         access_token: tokenVal.value,
-        note_uri: item.note_uri
+        note_uri: item.note_uri,
+        supply_info_uri: $config.apiUrl + '/note/alignment/supply_info',
+        recordset_uri: $config.apiUrl + '/note/alignment/recordset',
+        page_template_id: 'https://mps-test.metamoji.com/link/GRinHrCSu3Vxg6iEUYS_EyXj.mmjloc',
+        tag_namespace: 'com.metamoji.package.gemba.21234B4B-C92C-4C30-87D8-17ABB02BEFA8.RssView',
+        openedAt: Math.floor(new Date().getTime() / 1000)
       }
       console.log('eyachoch6:///nsk/open?' + app.$search_params(paramJson))
       window.location.href = 'eyachoch6:///nsk/open?' + app.$search_params(paramJson)
