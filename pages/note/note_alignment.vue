@@ -273,20 +273,46 @@ export default defineComponent({
         folder_uri: item.note_template_master.folder_uri,
         internal_id: item.uuid,
         note_new_uri: $config.apiUrl + '/note/alignment/callback',
-        supply_info_uri: $config.apiUrl + '/note/alignment/supply_info',
-        recordset_uri: $config.apiUrl + '/note/alignment/recordset',
-        page_template_id: 'https://mps-test.metamoji.com/link/GRinHrCSu3Vxg6iEUYS_EyXj.mmjloc',
-        tag_namespace: 'com.metamoji.package.gemba.21234B4B-C92C-4C30-87D8-17ABB02BEFA8.RssView',
-        createUserName: app.$auth.user.name,
-        createUserMail: app.$auth.user.email,
-        createdAt: Math.floor(new Date().getTime() / 1000),
-        openedAt: Math.floor(new Date().getTime() / 1000)
+        page_template_id: 'https://mps-test.metamoji.com/link/GRinHrCSu3Vxg6iEUYS_EyXj.mmjloc'
       }
-      console.log('eyachoch6:///nsk/new?' + app.$search_params(paramJson))
+      if (item.note_template_master.recordset_model && item.note_template_master.recordset_tagname_space) {
+        paramJson.recordset_uri = $config.apiUrl + '/note/alignment/recordset'
+        paramJson.tag_namespace = item.note_template_master.recordset_tagname_space
+      }
+      const tagParams = item.note_template_master?.note_template_tag_params
+      if (tagParams) {
+        const createParams = tagParams.map((item) => {
+          return (item.sequence === 'create' && item.create === true) ? item : null
+        }).filter(v => v)
+
+        createParams.forEach((element) => {
+          if (element.type === 'manual') {
+            paramJson[element.name] = element.value
+          } else {
+            switch (element.value) {
+              case 'loginUser':
+                paramJson[element.name] = app.$auth.user.name
+                break
+              case 'loginMail':
+                paramJson[element.name] = app.$auth.user.email
+                break
+              case 'timestamp':
+                paramJson[element.name] = Math.floor(new Date().getTime() / 1000)
+                break
+            }
+          }
+        })
+
+        const supplyParams = tagParams.map((item) => {
+          return (item.sequence === 'supply' && item.create === true) ? item : null
+        }).filter(v => v)
+        if (supplyParams.length > 0) {
+          paramJson.supply_info_uri = $config.apiUrl + '/note/alignment/supply_info'
+        }
+      }
       window.location.href = 'eyachoch6:///nsk/new?' + app.$search_params(paramJson)
     }
     const noteOpen = (item) => {
-      console.log(new Date().getTime())
       const paramJson = {
         access_id: $config.accessKeyId,
         access_token: tokenVal.value,

@@ -4,7 +4,11 @@ const FETCH_FIELDS = {
     'name',
     'template_id',
     'folder_uri',
-    'created_at'
+    'recordset_model',
+    'recordset_page_template_id',
+    'recordset_tagname_space',
+    'created_at',
+    'note_template_tag_params'
   ],
   noteAlignmentList: [
     'uuid',

@@ -196,6 +196,7 @@ export default defineComponent({
       totalCount.value = ret.metadata.resultset.count
       desserts.value = ret.results.map(item => item)
       loading.value = false
+      console.log(ret)
     }
 
     const setFilter = () => {

@@ -26,7 +26,7 @@ export default ({ $axios, $toast }) => {
         $toast.error('サーバーエラーが発生しました。<br />しばらく経ってから操作を行ってください。')
         break
       default:
-        console.log(res)
+        console.error(res)
         if (res.data?.message) {
           $toast.error(res.data.message)
         }

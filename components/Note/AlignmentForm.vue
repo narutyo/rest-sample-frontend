@@ -158,7 +158,6 @@ export default defineComponent({
           observer.value.reset()
           loading.value = false
           app.$toast.success('連携ノートを新規登録しました')
-          console.log(response)
           emitReload()
         }).catch(() => {
           app.$toast.error('連携ノートの新規登録に失敗しました')
@@ -175,7 +174,6 @@ export default defineComponent({
           observer.value.reset()
           loading.value = false
           app.$toast.success('連携ノートを更新しました')
-          console.log(response)
           emitReload()
         }).catch(() => {
           app.$toast.error('連携ノートの更新処理に失敗しました')
