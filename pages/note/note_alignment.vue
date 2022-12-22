@@ -318,8 +318,10 @@ export default defineComponent({
         }
       }
       if (sequence === 'create') {
+        console.log('eyachoch6:///nsk/new?' + app.$search_params(paramJson))
         window.location.href = 'eyachoch6:///nsk/new?' + app.$search_params(paramJson)
       } else if (sequence === 'open') {
+        console.log('eyachoch6:///nsk/open?' + app.$search_params(paramJson))
         window.location.href = 'eyachoch6:///nsk/open?' + app.$search_params(paramJson)
       }
     }
