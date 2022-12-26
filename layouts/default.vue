@@ -123,6 +123,11 @@ export default defineComponent({
         to: '/sample/rss'
       },
       {
+        title: '営業報告',
+        icon: 'mdi-newspaper-variant-multiple ',
+        to: '/sample/business_report'
+      },
+      {
         title: '連携ノート管理',
         icon: 'mdi-note-plus-outline',
         to: '/note/note_alignment'

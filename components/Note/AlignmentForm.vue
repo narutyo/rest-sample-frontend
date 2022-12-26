@@ -38,8 +38,6 @@
                 label="判別名"
                 :counter="255"
                 :rules="[rules.required, rules.length]"
-                :error="errors.name"
-                :error-messages="messages.name"
                 @keydown="clearError('name')"
               ></v-text-field>
             </v-col>
@@ -115,14 +113,6 @@ export default defineComponent({
       required: value => !!value || '必須項目です',
       length: value => (value && value.length <= 255) || '※60文字以内で入力してください'
     })
-    const errors = ref({
-      name: false,
-      note_template_master_id: false
-    })
-    const messages = ref({
-      name: null,
-      note_template_master_id: null
-    })
 
     watch(() => isAddOpen.value,
       async (to, from) => {
@@ -188,12 +178,6 @@ export default defineComponent({
     const close = () => {
       isAddOpen.value = false
       observer.value.reset()
-      const formKeys = Object.keys(errors.value)
-      formKeys.forEach(element => clearError(element))
-    }
-    const clearError = (item) => {
-      errors.value[item] = false
-      messages.value[item] = null
     }
 
     return {
@@ -204,13 +188,10 @@ export default defineComponent({
       form,
       loading,
       rules,
-      errors,
-      messages,
 
       post,
       update,
-      close,
-      clearError
+      close
     }
   }
 })

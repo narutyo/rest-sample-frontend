@@ -39,8 +39,6 @@
                   label="名前"
                   :counter="40"
                   :rules="[rules.required, rules.name_length]"
-                  :error="errors.name"
-                  :error-messages="messages.name"
                   @keydown="clearError('name')"
                 ></v-text-field>
               </div>
@@ -56,8 +54,6 @@
                   label="E-mail"
                   :counter="40"
                   :rules="[rules.required, rules.email_length]"
-                  :error="errors.email"
-                  :error-messages="messages.email"
                   @keydown="clearError('email')"
                 ></v-text-field>
               </div>
@@ -135,14 +131,6 @@ export default defineComponent({
       name_length: value => (value && value.length <= 40) || '※40文字以内で入力してください',
       email_length: value => (value && value.length <= 255) || '※255文字以内で入力してください'
     })
-    const errors = ref({
-      name: false,
-      email: false
-    })
-    const messages = ref({
-      name: null,
-      email: null
-    })
 
     watch(() => isAddOpen.value,
       (to, from) => {
@@ -168,8 +156,8 @@ export default defineComponent({
     }
 
     const post = async () => {
-      loading.value = true
       if (observer.value.validate()) {
+        loading.value = true
         await app.$axios.$post('/users', {
           name: form.value.name,
           email: form.value.email,
@@ -211,12 +199,6 @@ export default defineComponent({
     const close = () => {
       isAddOpen.value = false
       observer.value.reset()
-      const formKeys = Object.keys(errors.value)
-      formKeys.forEach(element => clearError(element))
-    }
-    const clearError = (item) => {
-      errors.value[item] = false
-      messages.value[item] = null
     }
 
     onMounted(async () => {
@@ -231,13 +213,10 @@ export default defineComponent({
       form,
       loading,
       rules,
-      errors,
-      messages,
 
       post,
       update,
-      close,
-      clearError
+      close
     }
   }
 })
