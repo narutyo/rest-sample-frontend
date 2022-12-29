@@ -38,7 +38,6 @@
                 label="判別名"
                 :counter="255"
                 :rules="[rules.required, rules.length]"
-                @keydown="clearError('name')"
               ></v-text-field>
             </v-col>
             <v-col

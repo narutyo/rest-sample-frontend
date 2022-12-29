@@ -170,7 +170,6 @@ export default defineComponent({
           value: item.uuid
         }
       })
-      console.log(ret)
     }
 
     const generate = async () => {

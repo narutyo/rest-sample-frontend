@@ -59,6 +59,7 @@ export default {
     '@nuxtjs/toast',
     '@nuxtjs/auth-next',
     '@nuxtjs/sentry',
+    '@nuxtjs/laravel-echo',
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

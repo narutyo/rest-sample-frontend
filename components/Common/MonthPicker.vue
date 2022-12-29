@@ -24,6 +24,7 @@
     </template>
     <v-date-picker
       v-model="date"
+      type="month"
       locale="ja"
       :day-format="date => new Date(date).getDate()"
       :max="maxDate"
