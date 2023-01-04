@@ -51,6 +51,7 @@ export default defineComponent({
   },
   setup (props) {
     const tab = ref(0)
+
     return {
       tab
     }

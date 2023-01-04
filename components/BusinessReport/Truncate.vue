@@ -66,14 +66,10 @@ import {
 
 export default defineComponent({
   name: 'BusinessReportTruncate',
-  setup (props, { emit }) {
+  setup (props) {
     const { app } = useContext()
     const isAddOpen = ref(false)
     const loading = ref(false)
-
-    const emitReload = () => {
-      emit('reload')
-    }
 
     const truncate = async () => {
       loading.value = true
@@ -81,7 +77,6 @@ export default defineComponent({
         isAddOpen.value = false
         loading.value = false
         app.$toast.success('営業報告を全削除しました')
-        emitReload()
       }).catch(() => {
         app.$toast.error('営業報告の削除処理に失敗しました')
       })

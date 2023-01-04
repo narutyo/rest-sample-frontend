@@ -34,6 +34,7 @@ export default {
     '~plugins/utils.js',
     '~plugins/validator.js',
     '~plugins/sentry.js',
+    '~plugins/pusherChannel.js',
     { src: '@/plugins/localStorage.js', ssr: false },
   ],
 
@@ -59,7 +60,6 @@ export default {
     '@nuxtjs/toast',
     '@nuxtjs/auth-next',
     '@nuxtjs/sentry',
-    '@nuxtjs/laravel-echo',
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -143,6 +143,9 @@ export default {
     sentryDsn: process.env.SENTRY_DSN,
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
+    echoHost: process.env.ECHO_HOST,
+    pusherKey: process.env.PUSHER_KEY,
+    pusherCluster: process.env.PUSHER_CLUSTER,
   },
 
   privateRuntimeConfig: {

@@ -122,7 +122,7 @@ import {
 
 export default defineComponent({
   name: 'BusinessReportGenerateSample',
-  setup (props, { emit }) {
+  setup (props) {
     const { app } = useContext()
     const isAddOpen = ref(false)
     const loading = ref(false)
@@ -152,10 +152,6 @@ export default defineComponent({
       required: value => value.length > 0 || '必須項目です'
     })
 
-    const emitReload = () => {
-      emit('reload')
-    }
-
     const getUsers = async () => {
       const paramJson = {
         'fields[]': [
@@ -179,7 +175,6 @@ export default defineComponent({
           isAddOpen.value = false
           loading.value = false
           app.$toast.success('サンプルデータを一括生成しました')
-          emitReload()
         }).catch(() => {
           app.$toast.error('サンプルデータの一括生成処理に失敗しました')
         })

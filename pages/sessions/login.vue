@@ -8,8 +8,8 @@
             v-text="$config.siteTitle"
           />
           <v-text-field
-            v-model="login.email"
-            label="メールアドレス"
+            v-model="login.identification_code"
+            label="社員番号"
           />
 
           <v-text-field
@@ -73,7 +73,7 @@ export default defineComponent({
 
     const show = ref(false)
     const login = ref({
-      email: '',
+      identification_code: '',
       password: ''
     })
 
@@ -83,14 +83,11 @@ export default defineComponent({
           grant_type: 'password',
           client_id: app.$config.clientId,
           client_secret: app.$config.clientSecret,
-          username: login.value.email,
+          username: login.value.identification_code,
           password: login.value.password,
           scope: ''
         }
         await app.$auth.loginWith('local', { data: param })
-        /* Laravel Sanctum
-        await app.$auth.loginWith('local', { data: login.value })
-        */
         router.push({ path: '/' })
       } catch (error) {
         // app.$captureError(error)

@@ -67,9 +67,7 @@
         ></v-combobox>
       </v-col>
       <v-col>
-        <business-report-generate-sample
-          @reload="getContents"
-        >
+        <business-report-generate-sample>
           <template #default="slotProps">
             <v-btn
               v-bind="slotProps.attrs"
@@ -83,9 +81,7 @@
             </v-btn>
           </template>
         </business-report-generate-sample>
-        <business-report-truncate
-          @reload="getContents"
-        >
+        <business-report-truncate>
           <template #default="slotProps">
             <v-btn
               v-bind="slotProps.attrs"
@@ -209,7 +205,6 @@ export default defineComponent({
         limit: limit.value,
         offset: (page.value - 1) * limit.value
       }
-      console.log(paramJson)
       if (filter.value.reportId) { paramJson.reportId = filter.value.reportId }
       if (filter.value.startDate) { paramJson.visit_start = filter.value.startDate }
       if (filter.value.endDate) { paramJson.visit_end = filter.value.endDate }
@@ -260,6 +255,10 @@ export default defineComponent({
 
     onMounted(async () => {
       await getContents()
+
+      app.$pusher_channel('SampleBusinessReport', function () {
+        updatePager(1)
+      })
     })
 
     return {

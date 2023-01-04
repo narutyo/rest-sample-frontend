@@ -1,6 +1,41 @@
 <template>
   <v-row>
     <v-col cols="12">
+      <v-dialog
+        v-model="isAddOpen"
+        persistent
+        max-width="640px"
+      >
+        <v-card
+          class="pt-6 pb-4 pb-md-8 px-4 px-md-12"
+        >
+          <div>
+            <v-row>
+              <v-col
+                cols="12"
+                sm="12"
+                md="12"
+              >
+                生成されたURLが上限値（2046文字）を超えています。<br>
+                連携値を連携値（補足）に移動させて再度操作を行ってください。
+              </v-col>
+            </v-row>
+          </div>
+          <div
+            class="text-center mt-4"
+          >
+            <v-btn
+              aria-label="閉じる"
+              outlined
+              @click="close"
+            >
+              <v-icon>mdi-close</v-icon>
+              閉じる
+            </v-btn>
+          </div>
+        </v-card>
+      </v-dialog>
+
       <v-card>
         <v-card-title>
           連携ノートマスタ
@@ -204,6 +239,11 @@ export default defineComponent({
       }
     ])
     const desserts = ref([])
+    const isAddOpen = ref(false)
+
+    const close = () => {
+      isAddOpen.value = false
+    }
 
     const limit = computed({
       get: () => store.state.defaultSettings.limit || 50,
@@ -317,20 +357,24 @@ export default defineComponent({
           paramJson.supply_info_uri = $config.apiUrl + '/note/alignment/supply_info/' + item.uuid + '?sequence=' + sequence
         }
       }
-      if (sequence === 'create') {
-        console.log('eyachoch6:///nsk/new?' + app.$search_params(paramJson))
-        window.location.href = 'eyachoch6:///nsk/new?' + app.$search_params(paramJson)
-      } else if (sequence === 'open') {
-        console.log('eyachoch6:///nsk/open?' + app.$search_params(paramJson))
-        window.location.href = 'eyachoch6:///nsk/open?' + app.$search_params(paramJson)
+      const linkUrl = ((sequence === 'create') ? 'eyachoch6:///nsk/new?' : 'eyachoch6:///nsk/open?') + app.$search_params(paramJson)
+      if (linkUrl.length < 2046) {
+        isAddOpen.value = true
+      } else {
+        window.location.href = linkUrl
       }
     }
 
     onMounted(async () => {
       await getContents()
+
+      app.$pusher_channel('NoteAlignmentMaster', function () {
+        updatePager(1)
+      })
     })
 
     return {
+      isAddOpen,
       loading,
       page,
       totalCount,
@@ -341,6 +385,7 @@ export default defineComponent({
       desserts,
       limit,
 
+      close,
       getContents,
       setFilter,
       setClearName,

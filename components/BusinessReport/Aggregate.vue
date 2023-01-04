@@ -94,25 +94,6 @@ export default defineComponent({
           }
         })
       }
-      console.log(datasets)
-
-      /*
-      datasets.value = {
-        labels: ['1月', '2月', '3月', '4月', '5月'],
-        datasets: [{
-          label: 'プリンター販売台数',
-          data: [880, 740, 900, 520, 930],
-          borderColor: 'rgba(255, 100, 100, 1)'
-        }]
-      }
-      this.keywords.datasets = ret.results.map((item) => {
-        return {
-          name: Object.keys(item)[0],
-          href: '/search/?tag=' + encodeURIComponent(Object.keys(item)[0]),
-          value: Object.values(item)[0],
-        }
-      })
-      */
     }
 
     const setFilter = (target, val) => {
