@@ -40,10 +40,6 @@ export default ({ app }, inject) => {
     ],
     recordsetModels: [
       {
-        text: 'RSSサンプル',
-        value: 'RssSample'
-      },
-      {
         text: '営業報告サンプル',
         value: 'SampleBusinessReport'
       }

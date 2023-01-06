@@ -122,12 +122,6 @@ export default defineComponent({
         admin: false
       },
       {
-        title: 'サンプル（RSS）',
-        icon: 'mdi-application-cog-outline',
-        to: '/sample/rss',
-        admin: false
-      },
-      {
         title: '営業報告',
         icon: 'mdi-newspaper-variant-multiple ',
         to: '/sample/business_report',
@@ -149,7 +143,7 @@ export default defineComponent({
         title: 'ユーザー管理',
         icon: 'mdi-note-multiple-outline',
         to: '/user',
-        admin: false
+        admin: true
       },
       {
         icon: 'mdi-chart-bubble',

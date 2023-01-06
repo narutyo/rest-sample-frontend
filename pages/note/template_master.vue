@@ -129,7 +129,7 @@ import TemplateForm from '~/components/Note/TemplateForm.vue'
 import TempleteDelete from '~/components/Note/TempleteDelete.vue'
 
 export default defineComponent({
-  name: 'SampleRssIndex',
+  name: 'TemplateMasterIndex',
   head: {
     title: 'ノートテンプレート一覧'
   },

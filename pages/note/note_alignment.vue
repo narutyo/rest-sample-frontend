@@ -188,7 +188,7 @@ import AlignmentForm from '~/components/Note/AlignmentForm.vue'
 import AlignmentDelete from '~/components/Note/AlignmentDelete.vue'
 
 export default defineComponent({
-  name: 'SampleRssIndex',
+  name: 'NoteAlignmentIndex',
   components: {
     AlignmentForm,
     AlignmentDelete
