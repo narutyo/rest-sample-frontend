@@ -16,6 +16,13 @@ const FETCH_FIELDS = {
     'note_template_master',
     'note_uri',
     'created_at'
+  ],
+  userList: [
+    'uuid',
+    'name',
+    'identification_code',
+    'admin_flg',
+    'created_at'
   ]
 }
 

@@ -1,9 +1,7 @@
 <template>
-  <nuxt-link
-    :to="{ path: '/users/detail/' + user.uuid }"
-  >
-    {{user.name}}
-  </nuxt-link>
+  <span>
+    {{ user?.name }}
+  </span>
 </template>
 
 <script>

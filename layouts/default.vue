@@ -7,22 +7,25 @@
       fixed
       app
     >
-
       <v-list>
-        <v-list-item
+        <template
           v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
         >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
+          <v-list-item
+            v-if="!item.admin || (item.admin && $auth.user.admin)"
+            :key="i"
+            :to="item.to"
+            router
+            exact
+          >
+            <v-list-item-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </v-list-item>
+        </template>
       </v-list>
     </v-navigation-drawer>
 
@@ -115,32 +118,44 @@ export default defineComponent({
       {
         icon: 'mdi-home',
         title: 'ホーム',
-        to: '/'
+        to: '/',
+        admin: false
       },
       {
         title: 'サンプル（RSS）',
         icon: 'mdi-application-cog-outline',
-        to: '/sample/rss'
+        to: '/sample/rss',
+        admin: false
       },
       {
         title: '営業報告',
         icon: 'mdi-newspaper-variant-multiple ',
-        to: '/sample/business_report'
+        to: '/sample/business_report',
+        admin: false
       },
       {
         title: '連携ノート管理',
         icon: 'mdi-note-plus-outline',
-        to: '/note/note_alignment'
+        to: '/note/note_alignment',
+        admin: false
       },
       {
         title: 'テンプレートマスタ管理',
         icon: 'mdi-note-multiple-outline',
-        to: '/note/template_master'
+        to: '/note/template_master',
+        admin: false
+      },
+      {
+        title: 'ユーザー管理',
+        icon: 'mdi-note-multiple-outline',
+        to: '/user',
+        admin: false
       },
       {
         icon: 'mdi-chart-bubble',
         title: 'ログアウト',
-        to: '/sessions/logout'
+        to: '/sessions/logout',
+        admin: false
       }
     ])
     const miniVariant = ref(false)

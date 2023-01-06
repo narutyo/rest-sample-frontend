@@ -39,36 +39,32 @@
                   label="名前"
                   :counter="40"
                   :rules="[rules.required, rules.name_length]"
-                  @keydown="clearError('name')"
                 ></v-text-field>
               </div>
-            </v-col>
-            <v-col
-              cols="12"
-              sm="12"
-              md="12"
-            >
               <div>
                 <v-text-field
-                  v-model="form.email"
-                  label="E-mail"
-                  :counter="40"
-                  :rules="[rules.required, rules.email_length]"
-                  @keydown="clearError('email')"
+                  v-model="form.identification_code"
+                  label="社員番号"
+                  :counter="10"
+                  :rules="[rules.required, rules.id_length]"
+                ></v-text-field>
+              </div>
+              <div v-if="!user">
+                <v-text-field
+                  v-model="form.password"
+                  label="パスワード"
+                  :counter="20"
+                  :rules="[rules.required, rules.pw_length]"
+                  :type="show ? 'text' : 'password'"
+                  :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="show = !show"
                 ></v-text-field>
               </div>
               <div>
-                <v-select
-                  v-model="form.selected"
-                  :items="company"
-                  :menu-props="{ maxHeight: '400' }"
-                  item-text="name"
-                  item-value="uuid"
-                  label="企業"
-                  hint="所属企業を選択してください"
-                  no-data-text="データがありません"
-                  persistent-hint
-                ></v-select>
+                <v-checkbox
+                  v-model="form.admin_flg"
+                  label="管理者権限を付与"
+                ></v-checkbox>
               </div>
             </v-col>
           </v-row>
@@ -80,12 +76,12 @@
         <v-btn
           v-if="!user"
           outlined
-          @click="post()"
+          @click="post"
         >新規登録</v-btn>
         <v-btn
           v-else
           outlined
-          @click="update()"
+          @click="update"
         >更新</v-btn>
       </div>
     </v-card>
@@ -98,7 +94,6 @@ import {
   ref,
   toRefs,
   useContext,
-  onMounted,
   watch
 } from '@nuxtjs/composition-api'
 
@@ -112,7 +107,6 @@ export default defineComponent({
   setup (props, { emit }) {
     const { app } = useContext()
     const { user } = toRefs(props)
-    const company = ref([])
 
     // フォーム
     const observer = ref(null)
@@ -120,56 +114,49 @@ export default defineComponent({
     const isAddOpen = ref(false)
     const form = ref({
       name: '',
-      email: '',
-      selected: ''
+      identification_code: '',
+      password: '',
+      admin_flg: 0
     })
+    const show = ref(false)
     const loading = ref(false)
 
     // バリデーション
     const rules = ref({
       required: value => !!value || '必須項目です',
       name_length: value => (value && value.length <= 40) || '※40文字以内で入力してください',
-      email_length: value => (value && value.length <= 255) || '※255文字以内で入力してください'
+      pw_length: value => (value && value.length <= 20) || '※20文字以内で入力してください',
+      id_length: value => (value && value.length <= 10) || '※10文字以内で入力してください'
     })
 
     watch(() => isAddOpen.value,
       (to, from) => {
         if (to === true && user.value) {
           form.value.name = user.value.name
-          form.value.email = user.value.email
-          form.value.selected = user.value.company
+          form.value.identification_code = user.value.identification_code
+          form.value.admin_flg = user.value.admin_flg
+          form.value.password = null
         }
       },
       { immediate: true }
     )
-
-    const getCompnay = async () => {
-      company.value = []
-      loading.value = true
-
-      const paramJson = {
-        'fields[]': app.$fetchFields.companyList
-      }
-      const companyRet = await app.$axios.$get('/company/master?' + app.$search_params(paramJson))
-      company.value = companyRet.results.map(item => item)
-      loading.value = false
-    }
 
     const post = async () => {
       if (observer.value.validate()) {
         loading.value = true
         await app.$axios.$post('/users', {
           name: form.value.name,
-          email: form.value.email,
-          company_id: form.value.selected
+          identification_code: form.value.identification_code,
+          password: form.value.password,
+          admin_flg: form.value.admin_flg
         }).then((response) => {
           isAddOpen.value = false
           observer.value.reset()
           loading.value = false
-          app.$toast.success('アカウントを新規登録しました')
+          app.$toast.success('ユーザーを新規登録しました')
           emitReload()
         }).catch(() => {
-          app.$toast.error('アカウントの新規登録に失敗しました')
+          app.$toast.error('ユーザーの新規登録に失敗しました')
         })
       }
     }
@@ -177,18 +164,17 @@ export default defineComponent({
       loading.value = true
       if (observer.value.validate()) {
         await app.$axios.$put('/users/' + user.value.uuid, {
-          uuid: user.value.uuid,
           name: form.value.name,
-          email: form.value.email,
-          company_id: form.value.selected
+          identification_code: form.value.identification_code,
+          admin_flg: form.value.admin_flg
         }).then((response) => {
           isAddOpen.value = false
           observer.value.reset()
           loading.value = false
-          app.$toast.success('アカウントを更新しました')
+          app.$toast.success('ユーザーを更新しました')
           emitReload()
         }).catch(() => {
-          app.$toast.error('アカウントの更新処理に失敗しました')
+          app.$toast.error('ユーザーの更新処理に失敗しました')
         })
       }
     }
@@ -201,16 +187,12 @@ export default defineComponent({
       observer.value.reset()
     }
 
-    onMounted(async () => {
-      await getCompnay()
-    })
-
     return {
-      company,
       observer,
 
       isAddOpen,
       form,
+      show,
       loading,
       rules,
 
